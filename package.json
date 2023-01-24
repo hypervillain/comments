@@ -8,9 +8,11 @@
   },
   "dependencies": {
     "@vercel/og": "^0.0.27",
+    "googleapis": "^110.0.0",
     "next": "latest",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "sass": "^1.57.1"
   },
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "^5.0.0",

@@ -1,14 +1,23 @@
 import { CSSProperties } from "react";
 
 type ClassProp = "tw" | "className"
-
-const withClassProp = (classProp: ClassProp, str: string) => {
-  return { [classProp]: str }
+type FontFamilies = {
+  normal: string;
+  bold: string;
 }
 
 interface CommentProps {
-  isLiked: boolean;
-  classProp: ClassProp;
+  classProp: ClassProp,
+  scale: number,
+  fontFamilies?: FontFamilies,
+  defaultFontSize?: number
+  style?: CSSProperties,
+  isLiked?: boolean;
+}
+
+
+const withClassProp = (classProp: ClassProp, str: string) => {
+  return { [classProp]: str }
 }
 
 const DislikeIcon = () => (
@@ -30,7 +39,7 @@ const DislikeIcon = () => (
   </svg>
 )
 
-const LikeIcon = ({ isLiked, classProp }: CommentProps) => {
+const LikeIcon = ({ isLiked, classProp }: Omit<CommentProps, 'scale'>) => {
   const style: CSSProperties = {
     width: '20px',
     height: '20px',
@@ -67,7 +76,7 @@ const LikeIcon = ({ isLiked, classProp }: CommentProps) => {
     )
 }
 
-const LikeCount = ({ classProp, isLiked, count }: CommentProps & { count: number }) => {
+const LikeCount = ({ classProp, isLiked, count }: Omit<CommentProps, 'scale'> & { count: number }) => {
   return (
     <>
       <LikeIcon classProp={classProp} isLiked={isLiked} />
@@ -80,25 +89,26 @@ const LikeCount = ({ classProp, isLiked, count }: CommentProps & { count: number
   )
 }
 
-export const Comment = ({ classProp, scale }: { classProp: ClassProp, scale: boolean }) => (
+export const Comment = ({ classProp, scale = 1, defaultFontSize = 17, fontFamilies, style }: CommentProps) => (
   <div
     style={{
+      height: '100%',
+      width: '100%',
       display: 'flex',
-      flexDirection: 'column',
       alignItems: 'center',
+      flexDirection: 'column',
       justifyContent: 'center',
       backgroundColor: 'white',
-      ...scale ? {
-        height: '100vh',
-        width: '100vw',
-        transform: 'scale(2)',
-      } : {
-        height: '100%',
-        width: '100%',
-      }
+      fontSize: defaultFontSize,
+      transform: `scale(${scale})`,
+      ...fontFamilies ? {
+        fontFamily: `"${fontFamilies.normal}"`,
+      } : null,
     }}
   >
   <div
+    // ref={ref}
+    style={style}
     {...withClassProp(classProp, "text-gray-900 mx-auto sm:px-4 py-4 flex flex-col")}
   >
     <div
@@ -114,22 +124,27 @@ export const Comment = ({ classProp, scale }: { classProp: ClassProp, scale: boo
             {...withClassProp(classProp, "py-3 flex flex-col")}
           >
             <div
-              {...withClassProp(classProp, "flex ml-0 sm:-ml-16")}
+              {...withClassProp(classProp, "flex ml-0")}
             >
               <img
-                {...withClassProp(classProp, "rounded-full w-12 h-12")}
-                style={{ position: 'relative', top: '-12px' }}
+                {...withClassProp(classProp, "rounded-full w-10 h-10 -top-2")}
+                style={{ position: 'relative' }}
                 src="https://via.placeholder.com/128/fe669e/ffcbde.png?text=S"
               />
               <div
-                {...withClassProp(classProp, "flex-grow-1 ml-4 flex flex-col")}
+                {...withClassProp(classProp, "flex-grow-1 ml-2 flex flex-col")}
               >
                 <div
-                  {...withClassProp(classProp, "mb-1 flex")}
+                  {...withClassProp(classProp, "flex")}
                 >
                   <a
                     href="#"
-                    {...withClassProp(classProp, "font-bold")}
+                    {...withClassProp(classProp, "font-italic")}
+                    
+                    style={{
+                      fontSize: '16px',
+                      ...fontFamilies ? { fontFamily: `"${fontFamilies.bold}"`, } : null
+                    }}
                   >
                     Studio KonKon
                   </a>&nbsp;
@@ -145,6 +160,7 @@ export const Comment = ({ classProp, scale }: { classProp: ClassProp, scale: boo
                   Lorem ipsum dolor sit amet, ut qui commodo sensibus, id utinam inermis
                   constituto vim. In nam dolorum interesset, per fierent ponderum ea. Eos aperiri
                   feugiat democritum ne feugiat democritum ne.
+                  
                 </div>
                 <div {...withClassProp(classProp, "items-center mb-2 flex")}>
                   <LikeCount
@@ -169,7 +185,6 @@ export const Comment = ({ classProp, scale }: { classProp: ClassProp, scale: boo
 
                   {/* THREAD */}
 
-
                   <div {...withClassProp(classProp, "mt-3 rounded flex flex-col")}>
                     <div {...withClassProp(classProp, "flex py-2")}>
                       <img
@@ -178,10 +193,14 @@ export const Comment = ({ classProp, scale }: { classProp: ClassProp, scale: boo
                         src="https://yt3.ggpht.com/IXu3p0caOU4IQufqXIdnSoN4g_zV_DKCGq63x1ZLLG5mYbbkchshLBbuZYtAu4tzMCMFCIgx=s88-c-k-c0x00ffffff-no-rj"
                       />
                       <div {...withClassProp(classProp, "flex-grow-1 ml-2 flex flex-col")}>
-                        <div {...withClassProp(classProp, "mb-1 flex")}>
+                        <div {...withClassProp(classProp, "flex")}>
                           <a
                             href="#"
                             {...withClassProp(classProp, "font-bold flex")}
+                            style={{
+                              fontSize: '16px',
+                              ...fontFamilies ? { fontFamily: `"${fontFamilies.bold}"`, } : null}
+                            }
                           >
                             Shinobu KonKon
                           </a>
@@ -198,6 +217,8 @@ export const Comment = ({ classProp, scale }: { classProp: ClassProp, scale: boo
                       </div>
                     </div>
                   </div>
+
+                  { /* END OF THREAD */ }
                 </div>
               </div>
             </div>
